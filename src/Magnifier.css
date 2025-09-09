@@ -1,0 +1,27 @@
+.magnifier-container {
+  position: relative;
+  cursor: zoom-in;
+}
+
+.magnifier-glass {
+  position: absolute;
+  border: 3px solid #000;
+  border-radius: 50%;
+  cursor: none;
+  /* Size of magnifier glass: */
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  display: none;
+  z-index: 10;
+}
+
+.magnifier-glass img {
+  position: absolute;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  transform-origin: top left;
+}
