@@ -4,6 +4,7 @@ import ZeroWasteGuides from "./ZeroWasteGuides";
 import AsignacionVehiculos from "./AsignacionVehiculos";
 import ConfiguracionRutas from "./ConfiguracionRutas";
 import GeneracionReportes from "./GeneracionReportes";
+import NotificacionServicio from "./components/NotificacionServicio";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("formulario");
@@ -41,6 +42,16 @@ export default function App() {
           }`}
         >
           Vehículos
+        </button>
+        <button
+          onClick={() => setActiveTab("notificaciones")}
+          className={`px-4 py-2 rounded-lg font-medium transition ${
+            activeTab === "notificaciones"
+              ? "bg-red-600 text-white"
+              : "bg-white shadow hover:bg-red-100"
+          }`}
+        >
+          Notificaciones
         </button>
         <button
           onClick={() => setActiveTab("rutas")}
@@ -84,6 +95,11 @@ export default function App() {
         {activeTab === "rutas" && (
           <div className="flex justify-center items-center">
             <ConfiguracionRutas />
+          </div>
+        )}
+        {activeTab === "notificaciones" && (
+          <div className="flex justify-center items-center">
+            <NotificacionServicio />
           </div>
         )}
         {activeTab === "reportes" && (
