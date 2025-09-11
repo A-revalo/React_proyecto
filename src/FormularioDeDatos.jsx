@@ -12,8 +12,6 @@ function FormularioDeDatos() {
   });
 
   const [errores, setErrores] = useState({});
-
-  // Modal abierto inicialmente
   const [mostrarModal, setMostrarModal] = useState(true);
 
   const handleChange = (e) => {
@@ -36,16 +34,30 @@ function FormularioDeDatos() {
     return nuevosErrores;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const nuevosErrores = validar();
+
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores);
     } else {
       setErrores({});
-      alert("Datos enviados correctamente ✅");
-      console.log("Datos:", formData);
-      setMostrarModal(false);
+
+      try {
+        const res = await fetch("http://localhost:3001/usuarios", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await res.json();
+        console.log("✅ Usuario guardado:", data);
+        alert("Usuario guardado con éxito");
+        setMostrarModal(false);
+      } catch (error) {
+        console.error("❌ Error al guardar:", error);
+        alert("Error al guardar el usuario");
+      }
     }
   };
 
@@ -161,7 +173,9 @@ function FormularioDeDatos() {
                 <label>Acepto los términos y condiciones</label>
               </div>
               {errores.aceptarTerminos && (
-                <p className="text-red-500 text-sm">{errores.aceptarTerminos}</p>
+                <p className="text-red-500 text-sm">
+                  {errores.aceptarTerminos}
+                </p>
               )}
 
               {/* Botón */}
@@ -171,7 +185,6 @@ function FormularioDeDatos() {
               >
                 Enviar
               </button>
-
               
             </form>
           </div>
