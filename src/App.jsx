@@ -4,7 +4,7 @@ import ZeroWasteGuides from "./ZeroWasteGuides";
 import AsignacionVehiculos from "./AsignacionVehiculos";
 import ConfiguracionRutas from "./ConfiguracionRutas";
 import GeneracionReportes from "./GeneracionReportes";
-import NotificacionServicio from "./components/NotificacionServicio";
+import NotificacionServicio from "./NotificacionServicio";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("formulario");
