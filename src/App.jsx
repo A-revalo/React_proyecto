@@ -3,6 +3,7 @@ import FormularioDeDatos from "./FormularioDeDatos";
 import ZeroWasteGuides from "./ZeroWasteGuides";
 import AsignacionVehiculos from "./AsignacionVehiculos";
 import ConfiguracionRutas from "./ConfiguracionRutas";
+import GeneracionReportes from "./GeneracionReportes";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("formulario");
@@ -51,6 +52,16 @@ export default function App() {
         >
           Rutas
         </button>
+        <button
+          onClick={() => setActiveTab("reportes")}
+          className={`px-4 py-2 rounded-lg font-medium transition ${
+            activeTab === "reportes"
+              ? "bg-red-600 text-white"
+              : "bg-white shadow hover:bg-red-100"
+          }`}
+        >
+          Reportes
+        </button>
       </div>
 
       {/* Contenido dinámico */}
@@ -73,6 +84,11 @@ export default function App() {
         {activeTab === "rutas" && (
           <div className="flex justify-center items-center">
             <ConfiguracionRutas />
+          </div>
+        )}
+        {activeTab === "reportes" && (
+          <div className="flex justify-center items-center">
+            <GeneracionReportes />
           </div>
         )}
       </div>

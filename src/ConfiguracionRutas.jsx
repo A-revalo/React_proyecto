@@ -19,7 +19,7 @@ export default function ConfiguracionRutas() {
 
   return (
     <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">🛣️ Configuración de Rutas</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center"> Configuración de Rutas</h2>
       <table className="w-full border">
         <thead className="bg-green-600 text-white">
           <tr>

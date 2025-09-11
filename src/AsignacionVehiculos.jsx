@@ -34,7 +34,7 @@ export default function AsignacionVehiculos() {
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">🚚 Asignación de Vehículos</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center"> Asignación de Vehículos</h2>
       <table className="w-full border">
         <thead className="bg-blue-600 text-white">
           <tr>
