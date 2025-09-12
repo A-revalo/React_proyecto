@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { db } from './config/db';
 import FormularioDeDatos from "./FormularioDeDatos";
 import ZeroWasteGuides from "./ZeroWasteGuides";
 import AsignacionVehiculos from "./AsignacionVehiculos";
 import ConfiguracionRutas from "./ConfiguracionRutas";
 import GeneracionReportes from "./GeneracionReportes";
 import NotificacionServicio from "./NotificacionServicio";
+import RequestForm from "./RequestForm";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("formulario");
@@ -73,6 +75,16 @@ export default function App() {
         >
           Reportes
         </button>
+        <button
+          onClick={() => setActiveTab("solicitud")}
+          className={`px-4 py-2 rounded-lg font-medium transition ${
+            activeTab === "solicitud"
+              ? "bg-indigo-600 text-white"
+              : "bg-white shadow hover:bg-indigo-100"
+          }`}
+        >
+          Nueva Solicitud
+        </button>
       </div>
 
       {/* Contenido dinámico */}
@@ -105,6 +117,11 @@ export default function App() {
         {activeTab === "reportes" && (
           <div className="flex justify-center items-center">
             <GeneracionReportes />
+          </div>
+        )}
+        {activeTab === "solicitud" && (
+          <div className="flex justify-center items-center">
+            <RequestForm />
           </div>
         )}
       </div>
