@@ -1,76 +1,162 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 
-export default function AsignarVehiculoRuta() {
+function AsignacionVehiculoForm() {
   const [vehiculos, setVehiculos] = useState([]);
   const [rutas, setRutas] = useState([]);
-  const [idVehiculo, setIdVehiculo] = useState("");
-  const [idRuta, setIdRuta] = useState("");
+  const [administradores, setAdministradores] = useState([]);
 
+  const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
+  const [rutaSeleccionada, setRutaSeleccionada] = useState("");
+  const [adminSeleccionado, setAdminSeleccionado] = useState("");
+
+  // Cargar datos desde el backend
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/vehiculos")
-      .then((res) => setVehiculos(res.data));
-    axios.get("http://localhost:3001/rutas").then((res) => setRutas(res.data));
+    const fetchVehiculos = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/vehiculos");
+        const data = await res.json();
+        setVehiculos(data);
+      } catch (error) {
+        console.error("Error cargando vehículos:", error);
+      }
+    };
+
+    const fetchRutas = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/rutas");
+        const data = await res.json();
+        setRutas(data);
+      } catch (error) {
+        console.error("Error cargando rutas:", error);
+      }
+    };
+
+    const fetchAdmins = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/administradores");
+        const data = await res.json();
+        setAdministradores(data);
+      } catch (error) {
+        console.error("Error cargando administradores:", error);
+      }
+    };
+
+    fetchVehiculos();
+    fetchRutas();
+    fetchAdmins();
   }, []);
 
-  // ✅ Nuevo handleAsignar con manejo de errores
-  const handleAsignar = async () => {
-    if (!idVehiculo || !idRuta) {
-      alert("Selecciona un vehículo y una ruta");
+  // Manejar selección de vehículo
+  const handleVehiculoChange = (e) => {
+    const id = parseInt(e.target.value, 10);
+    const vehiculo = vehiculos.find((v) => v.id_Vehiculo === id);
+    setVehiculoSeleccionado(vehiculo);
+  };
+
+  // Guardar asignación
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!vehiculoSeleccionado || !rutaSeleccionada) {
+      alert("Por favor complete todos los campos obligatorios");
       return;
     }
 
     try {
-      await axios.post("http://localhost:3001/rutas/asignar", {
-        id_Vehiculo: idVehiculo,
-        id_Ruta: idRuta,
+      const res = await fetch("http://localhost:3001/rutas/asignar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_Vehiculo: vehiculoSeleccionado.id_Vehiculo,
+          id_Ruta: rutaSeleccionada,
+        }),
       });
-      alert("🚛 Vehículo asignado correctamente en la base de datos");
-    } catch (err) {
-      console.error(err);
-      alert("❌ Error al asignar el vehículo");
+
+      const data = await res.json();
+      alert(data.message || "Asignación guardada correctamente");
+    } catch (error) {
+      console.error("Error guardando asignación:", error);
+      alert("❌ Error al guardar la asignación");
     }
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto bg-white rounded-xl shadow-md">
-      <h2 className="text-xl font-bold mb-4">Asignar Vehículo a Ruta</h2>
+    <form onSubmit={handleSubmit}>
+      <h2>Asignación de Vehículo</h2>
 
-      <label className="block mb-2">Vehículo</label>
-      <select
-        className="w-full border p-2 rounded mb-4"
-        value={idVehiculo}
-        onChange={(e) => setIdVehiculo(e.target.value)}
-      >
-        <option value="">-- Selecciona --</option>
-        {vehiculos.map((v) => (
-          <option key={v.id_Vehiculo} value={v.id_Vehiculo}>
-            {v.placa} - {v.modelo}
+      {/* Select Vehículo */}
+      <label>
+        Seleccionar vehículo:
+        <select
+          value={vehiculoSeleccionado?.id_Vehiculo || ""}
+          onChange={handleVehiculoChange}
+        >
+          <option value="" disabled>
+            -- Seleccione --
           </option>
-        ))}
-      </select>
+          {vehiculos.map((vehiculo) => (
+            <option key={vehiculo.id_Vehiculo} value={vehiculo.id_Vehiculo}>
+              {vehiculo.placa} - {vehiculo.modelo}
+            </option>
+          ))}
+        </select>
+      </label>
 
-      <label className="block mb-2">Ruta</label>
-      <select
-        className="w-full border p-2 rounded mb-4"
-        value={idRuta}
-        onChange={(e) => setIdRuta(e.target.value)}
-      >
-        <option value="">-- Selecciona --</option>
-        {rutas.map((r) => (
-          <option key={r.id_Ruta} value={r.id_Ruta}>
-            {r.nombre_ruta}
+      {/* Info del vehículo */}
+      {vehiculoSeleccionado && (
+        <div style={{ marginTop: "10px" }}>
+          <p>
+            <strong>Placa:</strong> {vehiculoSeleccionado.placa}
+          </p>
+          <p>
+            <strong>Modelo:</strong> {vehiculoSeleccionado.modelo}
+          </p>
+          <p>
+            <strong>Capacidad:</strong> {vehiculoSeleccionado.capacidad} kg
+          </p>
+        </div>
+      )}
+
+      {/* Select Ruta */}
+      <label>
+        Seleccionar ruta:
+        <select
+          value={rutaSeleccionada}
+          onChange={(e) => setRutaSeleccionada(e.target.value)}
+        >
+          <option value="" disabled>
+            -- Seleccione --
           </option>
-        ))}
-      </select>
+          {rutas.map((ruta) => (
+            <option key={ruta.id_Ruta} value={ruta.id_Ruta}>
+              {ruta.zona}
+            </option>
+          ))}
+        </select>
+      </label>
 
-      <button
-        onClick={handleAsignar}
-        className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-      >
-        Asignar
+      {/* Select Administrador (opcional, informativo) */}
+      <label>
+        Seleccionar administrador:
+        <select
+          value={adminSeleccionado}
+          onChange={(e) => setAdminSeleccionado(e.target.value)}
+        >
+          <option value="" disabled>
+            -- Seleccione --
+          </option>
+          {administradores.map((admin) => (
+            <option key={admin.id_Admin} value={admin.id_Admin}>
+              {admin.nombre} {admin.apellido}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <button type="submit" style={{ marginTop: "15px" }}>
+        Guardar asignación
       </button>
-    </div>
+    </form>
   );
 }
+
+export default AsignacionVehiculoForm;
